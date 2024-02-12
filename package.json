@@ -1,0 +1,16 @@
+{
+  "name": "video-streaming-backend",
+  "version": "1.0.0",
+  "description": "backend for a video streaming platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "js",
+    "javascript",
+    "backend"
+  ],
+  "author": "yusuf",
+  "license": "ISC"
+}
