@@ -13,14 +13,14 @@ const registerUser = asyncHandler(async(req,res)=>{
     
     //--------------------------------
     //get user info from frontend
-   const {username,email,password,fullname}=req.body
+   const {username,email,password,fullName}=req.body
 
 
 
    //validation-not empty
    //add other validations like email regex etc later
    if(
-    [username,email,password,fullname].some((fields)=>{
+    [username,email,password,fullName].some((fields)=>{
         fields?.trim()===""
     })
    ){
@@ -28,7 +28,7 @@ const registerUser = asyncHandler(async(req,res)=>{
    }
 
 //check if user already exists
-  const existedUser =  User.findOne({
+  const existedUser =  await User.findOne({
 
     $or:[{username},{email}]
    })
@@ -40,10 +40,15 @@ const registerUser = asyncHandler(async(req,res)=>{
 
     //check for  avatar
     const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    let coverImageLocalPath;
+
+    if(req.files && Array.isArray(req.files.coverImage)&&req.files.coverImage.length >0){
+        coverImageLocalPath = req.files.coverImage[0].path;
+    }
 
     if(!avatarLocalPath){
-        throw new ApiError(400,"Avatar is required")
+        throw new ApiError(400,"Avatar is required locally")
     }
 
 
@@ -59,7 +64,7 @@ const registerUser = asyncHandler(async(req,res)=>{
     //create user object (entry in db)
 
      const user = await User.create({
-        fullname,
+        fullName,
         avatar: avatar.url,
         coverImage:coverImage?.url || "",
         email,
@@ -79,8 +84,8 @@ const registerUser = asyncHandler(async(req,res)=>{
 
     //return res
 
-    return res.statue(200).json(
-        new application(200,createdUser,"User created successfully")
+    return res.status(200).json(
+        new ApiResponse(200,createdUser,"User created successfully")
     )
 }) 
 
